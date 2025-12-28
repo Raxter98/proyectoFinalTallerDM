@@ -1,0 +1,96 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    
+    <ion-title *ngIf="pokemon">
+      {{ pokemon.name | titlecase }}
+    </ion-title>
+    
+    <ion-title *ngIf="!pokemon && !loading">
+      Pokémon no encontrado
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Cargando información...</p>
+  </div>
+
+  <!-- Error -->
+  <ion-card *ngIf="error && !loading" color="danger">
+    <ion-card-content>
+      <ion-icon name="warning-outline"></ion-icon>
+      {{ error }}
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Detalles del Pokémon -->
+  <div *ngIf="pokemon && !loading">
+    <!-- Información principal -->
+    <ion-card>
+      <div class="pokemon-image">
+        <img 
+          [src]="pokemon.sprites.front_default" 
+          [alt]="pokemon.name"
+          onerror="this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/0.png'">
+      </div>
+      
+      <ion-card-header>
+        <ion-card-title>
+          #{{ pokemon.id }} {{ pokemon.name | titlecase }}
+        </ion-card-title>
+        
+        <ion-card-subtitle>
+          <ion-chip *ngFor="let type of pokemon.types" [color]="getTypeColor(type.type.name)">
+            {{ type.type.name | titlecase }}
+          </ion-chip>
+        </ion-card-subtitle>
+      </ion-card-header>
+      
+      <ion-card-content>
+        <ion-list lines="none">
+          <ion-item>
+            <ion-label>
+              <h3>Altura</h3>
+              <p>{{ formatHeight(pokemon.height) }}</p>
+            </ion-label>
+          </ion-item>
+          
+          <ion-item>
+            <ion-label>
+              <h3>Peso</h3>
+              <p>{{ formatWeight(pokemon.weight) }}</p>
+            </ion-label>
+          </ion-item>
+          
+          <ion-item>
+            <ion-label>
+              <h3>Tipos</h3>
+              <p>{{ getTypesString() }}</p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Datos crudos de la API (Requerimiento) -->
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="code-outline"></ion-icon>
+          Datos Crudos de la API
+        </ion-card-title>
+        <ion-card-subtitle>Response JSON completo</ion-card-subtitle>
+      </ion-card-header>
+      
+      <ion-card-content>
+        <pre>{{ pokemon | json }}</pre>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

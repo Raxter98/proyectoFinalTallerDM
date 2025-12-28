@@ -1,0 +1,74 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>
+      <ion-icon name="paw-outline" slot="start"></ion-icon>
+      PokéAPI Simple
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Integración con PokéAPI</ion-card-title>
+      <ion-card-subtitle>Lista de Pokémon desde la API</ion-card-subtitle>
+    </ion-card-header>
+    
+    <ion-card-content>
+      <p>Esta aplicación demuestra una integración simple con la API de Pokémon.</p>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Estado de carga -->
+  <div *ngIf="loading" class="loading">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Cargando Pokémon...</p>
+  </div>
+
+  <!-- Error -->
+  <ion-card *ngIf="error && !loading" color="danger">
+    <ion-card-content>
+      <ion-icon name="warning-outline"></ion-icon>
+      {{ error }}
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Lista de Pokémon -->
+  <ion-card *ngIf="!loading && !error">
+    <ion-card-header>
+      <ion-card-title>Primeros 20 Pokémon</ion-card-title>
+    </ion-card-header>
+    
+    <ion-card-content>
+      <ion-list>
+        <ion-item 
+          *ngFor="let pokemon of pokemonList" 
+          [routerLink]="['/detail', getPokemonId(pokemon.url)]"
+          button>
+          
+          <ion-label>
+            <h2>{{ pokemon.name | titlecase }}</h2>
+            <p>ID: {{ getPokemonId(pokemon.url) }}</p>
+          </ion-label>
+          
+          <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Datos crudos de la API (Requerimiento) -->
+  <ion-card *ngIf="pokemonList.length > 0">
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="code-outline"></ion-icon>
+        Datos Crudos de la API
+      </ion-card-title>
+      <ion-card-subtitle>Response JSON sin procesar</ion-card-subtitle>
+    </ion-card-header>
+    
+    <ion-card-content>
+      <pre>{{ pokemonList | json }}</pre>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
